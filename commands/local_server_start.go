@@ -24,13 +24,16 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"syscall"
 
+	"github.com/dunglas/frankenphp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/soheilhy/cmux"
@@ -174,8 +177,33 @@ var localServerStartCmd = &console.Command{
 			return err
 		}
 		config.Logger = zerolog.New(lw).With().Str("source", "server").Timestamp().Logger()
+
+		fmt.Printf("%+v\n", config)
+		fmt.Println()
+
+		if err := frankenphp.Init(); err != nil {
+			panic(err)
+		}
+		defer frankenphp.Shutdown()
+	
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
+			fmt.Printf("%+v\n", r)
+			fmt.Println()
+
+			req := frankenphp.NewRequestWithContext(r, config.DocumentRoot, nil)
+			if err := frankenphp.ServeHTTP(w, req); err != nil {
+				panic(err)
+			}
+		})
+
+		log.Fatal(http.ListenAndServe(":" + strconv.Itoa(config.Port), nil))
+
+
 		p, err := project.New(config)
 		if err != nil {
+			ui.Comment("OK1");
+
 			return err
 		}
 

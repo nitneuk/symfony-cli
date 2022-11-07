@@ -29,6 +29,15 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 )
 
+replace github.com/dunglas/frankenphp v0.0.0-20221107155707-bc6bb70e4416 => github.com/nitneuk/frankenphp v0.0.0-20221107155018-d945de16b4de
+
+require (
+	github.com/dunglas/frankenphp v0.0.0-20221107155707-bc6bb70e4416 // indirect
+	go.uber.org/atomic v1.10.0 // indirect
+	go.uber.org/multierr v1.8.0 // indirect
+	go.uber.org/zap v1.23.0 // indirect
+)
+
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/NYTimes/gziphandler v1.1.1
